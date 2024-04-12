@@ -1,24 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: quest-app
+  name: shopping-app
 spec:
   selector:
     matchLabels:
-      app: quest-app
+      app: shopping-app
   replicas: 1
   template:
     metadata:
       labels:
-        app: quest-app
+        app: shopping-app
     spec:
       containers:
-        - name: quest-app
-          image: youtubedilruba/shopping:latest
+        - name: shopping-app
           imagePullPolicy: Always
           ports:
             - name: http
-              containerPort: 8081
+              containerPort: 8083
               protocol: TCP
           resources:
             requests:
