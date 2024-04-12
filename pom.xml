@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.project</groupId>
-	<artifactId>shopping</artifactId>
+	<artifactId>questapp</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>shopping</name>
+	<name>questapp</name>
 	<description>QuestApp project for Spring Boot</description>
 	<packaging>jar</packaging>
 	<properties>
@@ -36,7 +36,6 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
-			<version>3.2.4</version>
 		</dependency>
 
 		<dependency>
@@ -46,9 +45,9 @@
 			<optional>true</optional>
 		</dependency>
 		<dependency>
-			<groupId>org.postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-			<version>42.7.3</version>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
