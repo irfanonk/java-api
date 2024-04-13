@@ -41,6 +41,12 @@ public class UserService {
 		return userRepository.findById(userId).orElse(null);
 	}
 
+	public User getOneUserByIdWithFields(Long userId, List<String> fields) {
+		System.out.println("desiredFields = " + fields);
+
+		return userRepository.findUserByUserIdWithFields(userId, fields);
+	}
+
 	public User updateOneUser(Long userId, User newUser) {
 		Optional<User> user = userRepository.findById(userId);
 		if (user.isPresent()) {

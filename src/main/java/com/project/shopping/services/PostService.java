@@ -1,11 +1,14 @@
 package com.project.shopping.services;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.project.shopping.entities.Post;
@@ -13,6 +16,7 @@ import com.project.shopping.entities.User;
 import com.project.shopping.repos.PostRepository;
 import com.project.shopping.requests.PostCreateRequest;
 import com.project.shopping.requests.PostUpdateRequest;
+import com.project.shopping.responses.ErrorResponse;
 import com.project.shopping.responses.LikeResponse;
 import com.project.shopping.responses.PostResponse;
 
@@ -57,17 +61,27 @@ public class PostService {
 		return new PostResponse(post, likes);
 	}
 
-	public Post createOnePost(PostCreateRequest newPostRequest) {
+	public ResponseEntity<?> createOnePost(PostCreateRequest newPostRequest) {
+		// List<String> desiredFields = Arrays.asList("id");
+		// User user = userService.getOneUserByIdWithFields(newPostRequest.getUserId(),
+		// desiredFields);
 		User user = userService.getOneUserById(newPostRequest.getUserId());
-		if (user == null)
-			return null;
+
+		if (user == null) {
+			ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "User not found",
+					"The user with the given ID does not exist.");
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+		}
+
 		Post toSave = new Post();
 		toSave.setId(newPostRequest.getId());
 		toSave.setText(newPostRequest.getText());
 		toSave.setTitle(newPostRequest.getTitle());
-		toSave.setUser(user);
 		toSave.setCreateDate(new Date());
-		return postRepository.save(toSave);
+		toSave.setUser(user);
+		postRepository.save(toSave);
+		toSave.setUser(null);
+		return ResponseEntity.status(HttpStatus.CREATED).body(toSave);
 	}
 
 	public Post updateOnePostById(Long postId, PostUpdateRequest updatePost) {
