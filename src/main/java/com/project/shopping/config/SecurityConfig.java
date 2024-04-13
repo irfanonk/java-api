@@ -81,6 +81,7 @@ public class SecurityConfig {
                 .authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/")
                 .permitAll()
+                .antMatchers("/swagger-ui.html", "/**/api-docs/**", "/swagger-ui/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/posts")
                 .permitAll()
                 .antMatchers(HttpMethod.GET, "/comments")
