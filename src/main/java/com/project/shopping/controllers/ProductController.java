@@ -3,6 +3,10 @@ package com.project.shopping.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -36,9 +40,19 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.OK).body("Products imported successfully from external URL.");
     }
 
+    // @GetMapping
+    // public List<Product> getAllProducts() {
+    // return productService.getAllProducts();
+    // }
     @GetMapping
-    public List<Product> getAllProducts() {
-        return productService.getAllProducts();
+    public Page<Product> getAllProducts(@RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sort) {
+        // Create a pageable object for pagination and sorting
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sort));
+
+        // Retrieve products with pagination and sorting applied
+        return productService.getAllProducts(pageable);
     }
 
     @GetMapping("/{id}")
