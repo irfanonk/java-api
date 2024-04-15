@@ -39,7 +39,7 @@ public class ProductController {
 
     @GetMapping
     public Page<Product> getAllProducts(@RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "16") int size,
             @RequestParam(defaultValue = "id") String sort) {
         // Create a pageable object for pagination and sorting
         Pageable pageable = PageRequest.of(page, size, Sort.by(sort));

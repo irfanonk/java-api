@@ -88,6 +88,7 @@ public class SecurityConfig {
                 .permitAll()
                 .antMatchers(HttpMethod.GET, "/comments")
                 .permitAll()
+                .antMatchers("/admin").hasAnyAuthority("admin")
                 .antMatchers("/auth/**")
                 .permitAll()
                 .anyRequest().authenticated();

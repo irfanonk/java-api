@@ -7,6 +7,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.project.shopping.entities.RefreshToken;
 import com.project.shopping.entities.User;
 import com.project.shopping.requests.RefreshRequest;
-import com.project.shopping.requests.UserRequest;
+import com.project.shopping.requests.AuthRequest;
 import com.project.shopping.responses.AuthResponse;
 import com.project.shopping.security.JwtTokenProvider;
 import com.project.shopping.services.RefreshTokenService;
@@ -46,8 +47,12 @@ public class AuthController {
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<AuthResponse> login(@RequestBody UserRequest loginRequest) {
+	public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest loginRequest) {
 		AuthResponse authResponse = new AuthResponse();
+		if (!loginRequest.isValid()) {
+			authResponse.setMessage("Please provide email and password!");
+			return new ResponseEntity<>(authResponse, HttpStatus.BAD_REQUEST);
+		}
 		if (userService.getOneUserByUserName(loginRequest.getUserName()) == null) {
 			authResponse.setMessage("Email or password wrong!");
 			return new ResponseEntity<>(authResponse, HttpStatus.BAD_REQUEST);
@@ -66,8 +71,12 @@ public class AuthController {
 	}
 
 	@PostMapping("/register")
-	public ResponseEntity<AuthResponse> register(@RequestBody UserRequest registerRequest) {
+	public ResponseEntity<AuthResponse> register(@RequestBody AuthRequest registerRequest) {
 		AuthResponse authResponse = new AuthResponse();
+		if (!registerRequest.isValid()) {
+			authResponse.setMessage("Please provide email and password!");
+			return new ResponseEntity<>(authResponse, HttpStatus.BAD_REQUEST);
+		}
 		if (userService.getOneUserByUserName(registerRequest.getUserName()) != null) {
 			authResponse.setMessage("Email already in use.");
 			return new ResponseEntity<>(authResponse, HttpStatus.BAD_REQUEST);
