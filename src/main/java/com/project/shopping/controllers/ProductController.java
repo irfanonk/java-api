@@ -1,7 +1,5 @@
 package com.project.shopping.controllers;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 
 import com.project.shopping.entities.Product;
 import com.project.shopping.services.ProductService;
@@ -40,10 +37,6 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.OK).body("Products imported successfully from external URL.");
     }
 
-    // @GetMapping
-    // public List<Product> getAllProducts() {
-    // return productService.getAllProducts();
-    // }
     @GetMapping
     public Page<Product> getAllProducts(@RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,

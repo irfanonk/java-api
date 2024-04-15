@@ -72,8 +72,8 @@ public class UserController {
 	}
 
 	@ExceptionHandler(UserNotFoundException.class)
-	@ResponseStatus(HttpStatus.NOT_FOUND)
-	private void handleUserNotFound() {
-
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	private ResponseEntity<String> handleUserNotFound(UserNotFoundException ex) {
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User not found");
 	}
 }
