@@ -39,6 +39,9 @@ public class JwtUserDetails implements UserDetails {
 		for (Role role : roles) {
 			authoritiesList.add(new SimpleGrantedAuthority(role.getName()));
 		}
+		if (authoritiesList.isEmpty()) {
+			authoritiesList.add(new SimpleGrantedAuthority("USER"));
+		}
 
 		return new JwtUserDetails(user.getId(), user.getUserName(), user.getPassword(), authoritiesList);
 	}
