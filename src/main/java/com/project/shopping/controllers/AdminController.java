@@ -31,19 +31,19 @@ public class AdminController {
 		this.userService = userService;
 	}
 
-	@GetMapping("/users")
-	public List<UserResponse> getAllUsers() {
-		return userService.getAllUsers().stream()
-				.map(UserResponse::new)
-				.collect(Collectors.toList());
-	}
-
-	@PostMapping
+	@PostMapping("/user")
 	public ResponseEntity<Void> createUser(@RequestBody User newUser) {
 		User user = userService.saveOneUser(newUser);
 		if (user != null)
 			return new ResponseEntity<>(HttpStatus.CREATED);
 		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
+	@GetMapping("/users")
+	public List<UserResponse> getAllUsers() {
+		return userService.getAllUsers().stream()
+				.map(UserResponse::new)
+				.collect(Collectors.toList());
 	}
 
 	@GetMapping("/users/{userId}")

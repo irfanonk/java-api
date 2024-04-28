@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import com.project.shopping.entities.User;
 import com.project.shopping.repos.CommentRepository;
-import com.project.shopping.repos.LikeRepository;
 import com.project.shopping.repos.PostRepository;
 import com.project.shopping.repos.UserRepository;
 
@@ -17,14 +16,12 @@ import com.project.shopping.repos.UserRepository;
 public class UserService {
 
 	UserRepository userRepository;
-	LikeRepository likeRepository;
 	CommentRepository commentRepository;
 	PostRepository postRepository;
 
-	public UserService(UserRepository userRepository, LikeRepository likeRepository,
+	public UserService(UserRepository userRepository,
 			CommentRepository commentRepository, PostRepository postRepository) {
 		this.userRepository = userRepository;
-		this.likeRepository = likeRepository;
 		this.commentRepository = commentRepository;
 		this.postRepository = postRepository;
 	}
@@ -77,10 +74,8 @@ public class UserService {
 		if (postIds.isEmpty())
 			return null;
 		List<Object> comments = commentRepository.findUserCommentsByPostId(postIds);
-		List<Object> likes = likeRepository.findUserLikesByPostId(postIds);
 		List<Object> result = new ArrayList<>();
 		result.addAll(comments);
-		result.addAll(likes);
 		return result;
 	}
 

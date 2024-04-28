@@ -96,7 +96,6 @@ public class AuthController {
 		user.setLastName(registerRequest.getLastName());
 		user.setStatus(registerRequest.getStatus());
 		Role role = roleRepository.findByName("USER").get();
-		System.out.println("role" + role);
 		user.setRoles(Collections.singletonList(role));
 		userService.saveOneUser(user);
 

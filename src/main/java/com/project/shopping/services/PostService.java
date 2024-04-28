@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -16,25 +15,18 @@ import com.project.shopping.repos.PostRepository;
 import com.project.shopping.requests.PostCreateRequest;
 import com.project.shopping.requests.PostUpdateRequest;
 import com.project.shopping.responses.ErrorResponse;
-import com.project.shopping.responses.LikeResponse;
 import com.project.shopping.responses.PostResponse;
 
 @Service
 public class PostService {
 
 	private PostRepository postRepository;
-	private LikeService likeService;
 	private UserService userService;
 
 	public PostService(PostRepository postRepository,
 			UserService userService) {
 		this.postRepository = postRepository;
 		this.userService = userService;
-	}
-
-	@Autowired
-	public void setLikeService(LikeService likeService) {
-		this.likeService = likeService;
 	}
 
 	public List<PostResponse> getAllPosts(Optional<Long> userId) {
@@ -44,9 +36,7 @@ public class PostService {
 		} else
 			list = postRepository.findAll();
 		return list.stream().map(p -> {
-			List<LikeResponse> likes = likeService.getAllLikesWithParam(Optional.ofNullable(null),
-					Optional.of(p.getId()));
-			return new PostResponse(p, likes);
+			return new PostResponse(p);
 		}).collect(Collectors.toList());
 	}
 
@@ -56,8 +46,7 @@ public class PostService {
 
 	public PostResponse getOnePostByIdWithLikes(Long postId) {
 		Post post = postRepository.findById(postId).orElse(null);
-		List<LikeResponse> likes = likeService.getAllLikesWithParam(Optional.ofNullable(null), Optional.of(postId));
-		return new PostResponse(post, likes);
+		return new PostResponse(post);
 	}
 
 	public ResponseEntity<?> createOnePost(PostCreateRequest newPostRequest) {
