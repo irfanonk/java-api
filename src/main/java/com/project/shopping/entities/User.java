@@ -19,8 +19,11 @@ public class User {
 	String firstName;
 	String lastName;
 	String country;
+	String city;
+	String phone;
+	String status;
+	String profession;
 	String password;
-	String userRole;
 	int avatar;
 	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))

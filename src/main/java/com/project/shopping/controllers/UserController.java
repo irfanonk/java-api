@@ -2,6 +2,8 @@ package com.project.shopping.controllers;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.project.shopping.entities.User;
 import com.project.shopping.exceptions.UserNotFoundException;
 import com.project.shopping.responses.UserResponse;
+import com.project.shopping.security.CustomHttpServletRequestWrapper;
 import com.project.shopping.services.UserService;
 
 @RestController
@@ -43,7 +46,18 @@ public class UserController {
 		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
-	@GetMapping("/{userId}")
+	@GetMapping("/account")
+	public UserResponse getOneUserFromJwt(CustomHttpServletRequestWrapper request) {
+
+		Long userId = (request).getUserId();
+		User user = userService.getOneUserById(userId);
+		if (user == null) {
+			throw new UserNotFoundException();
+		}
+		return new UserResponse(user);
+	}
+
+	@GetMapping("/protected/{userId}")
 	public UserResponse getOneUser(@PathVariable Long userId) {
 		User user = userService.getOneUserById(userId);
 		if (user == null) {
