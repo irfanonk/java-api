@@ -1,8 +1,7 @@
 package com.project.shopping.controllers;
 
 import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,17 +19,23 @@ import org.springframework.web.bind.annotation.RestController;
 import com.project.shopping.entities.User;
 import com.project.shopping.exceptions.UserNotFoundException;
 import com.project.shopping.responses.UserResponse;
-import com.project.shopping.security.CustomHttpServletRequestWrapper;
 import com.project.shopping.services.UserService;
 
 @RestController
-@RequestMapping("/users")
-public class UserController {
+@RequestMapping("/admin")
+public class AdminController {
 
 	private UserService userService;
 
-	public UserController(UserService userService) {
+	public AdminController(UserService userService) {
 		this.userService = userService;
+	}
+
+	@GetMapping("/users")
+	public List<UserResponse> getAllUsers() {
+		return userService.getAllUsers().stream()
+				.map(UserResponse::new)
+				.collect(Collectors.toList());
 	}
 
 	@PostMapping
@@ -41,10 +46,8 @@ public class UserController {
 		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
-	@GetMapping("/account")
-	public UserResponse getOneUserFromJwt(CustomHttpServletRequestWrapper request) {
-
-		Long userId = (request).getUserId();
+	@GetMapping("/users/{userId}")
+	public UserResponse getOneUser(@PathVariable Long userId) {
 		User user = userService.getOneUserById(userId);
 		if (user == null) {
 			throw new UserNotFoundException();
@@ -52,7 +55,7 @@ public class UserController {
 		return new UserResponse(user);
 	}
 
-	@PutMapping("/account")
+	@PutMapping("/users/{userId}")
 	public ResponseEntity<Void> updateOneUser(@PathVariable Long userId, @RequestBody User newUser) {
 		User user = userService.updateOneUser(userId, newUser);
 		if (user != null)
@@ -61,12 +64,12 @@ public class UserController {
 
 	}
 
-	@DeleteMapping("/account")
+	@DeleteMapping("/users/{userId}")
 	public void deleteOneUser(@PathVariable Long userId) {
 		userService.deleteById(userId);
 	}
 
-	@GetMapping("/account/activity")
+	@GetMapping("/users/activity/{userId}")
 	public List<Object> getUserActivity(@PathVariable Long userId) {
 		return userService.getUserActivity(userId);
 	}

@@ -1,6 +1,7 @@
 package com.project.shopping.security;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -8,6 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.project.shopping.entities.Role;
 import com.project.shopping.entities.User;
 
 import lombok.Getter;
@@ -32,7 +34,12 @@ public class JwtUserDetails implements UserDetails {
 
 	public static JwtUserDetails create(User user) {
 		List<GrantedAuthority> authoritiesList = new ArrayList<>();
-		authoritiesList.add(new SimpleGrantedAuthority("user"));
+		List<Role> roles = user.getRoles();
+
+		for (Role role : roles) {
+			authoritiesList.add(new SimpleGrantedAuthority(role.getName()));
+		}
+
 		return new JwtUserDetails(user.getId(), user.getUserName(), user.getPassword(), authoritiesList);
 	}
 
