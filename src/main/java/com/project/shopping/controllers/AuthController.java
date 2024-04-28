@@ -1,5 +1,7 @@
 package com.project.shopping.controllers;
 
+import java.util.Collections;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.shopping.entities.RefreshToken;
+import com.project.shopping.entities.Role;
 import com.project.shopping.entities.User;
+import com.project.shopping.repos.RoleRepository;
 import com.project.shopping.requests.RefreshRequest;
 import com.project.shopping.requests.AuthRequest;
 import com.project.shopping.responses.AuthResponse;
@@ -32,15 +36,18 @@ public class AuthController {
 
 	private UserService userService;
 
+	private RoleRepository roleRepository;
+
 	private PasswordEncoder passwordEncoder;
 
 	private RefreshTokenService refreshTokenService;
 
 	public AuthController(AuthenticationManager authenticationManager, UserService userService,
-			PasswordEncoder passwordEncoder, JwtTokenProvider jwtTokenProvider,
+			PasswordEncoder passwordEncoder, RoleRepository roleRepository, JwtTokenProvider jwtTokenProvider,
 			RefreshTokenService refreshTokenService) {
 		this.authenticationManager = authenticationManager;
 		this.userService = userService;
+		this.roleRepository = roleRepository;
 		this.passwordEncoder = passwordEncoder;
 		this.jwtTokenProvider = jwtTokenProvider;
 		this.refreshTokenService = refreshTokenService;
@@ -66,7 +73,6 @@ public class AuthController {
 
 		authResponse.setAccessToken("Bearer " + jwtToken);
 		authResponse.setRefreshToken(refreshTokenService.createRefreshToken(user));
-		authResponse.setUserId(user.getId());
 		return new ResponseEntity<>(authResponse, HttpStatus.OK);
 	}
 
@@ -86,6 +92,12 @@ public class AuthController {
 		user.setEmail(registerRequest.getEmail());
 		user.setUserName(registerRequest.getUserName());
 		user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+		user.setFirstName(registerRequest.getFirstName());
+		user.setLastName(registerRequest.getLastName());
+		user.setStatus(registerRequest.getStatus());
+		Role role = roleRepository.findByName("USER").get();
+		System.out.println("role" + role);
+		user.setRoles(Collections.singletonList(role));
 		userService.saveOneUser(user);
 
 		UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
@@ -94,10 +106,8 @@ public class AuthController {
 		SecurityContextHolder.getContext().setAuthentication(auth);
 		String jwtToken = jwtTokenProvider.generateJwtToken(auth);
 
-		authResponse.setMessage("User successfully registered.");
 		authResponse.setAccessToken("Bearer " + jwtToken);
 		authResponse.setRefreshToken(refreshTokenService.createRefreshToken(user));
-		authResponse.setUserId(user.getId());
 		return new ResponseEntity<>(authResponse, HttpStatus.CREATED);
 	}
 
@@ -112,7 +122,6 @@ public class AuthController {
 			String jwtToken = jwtTokenProvider.generateJwtTokenByUserId(user.getId());
 			response.setMessage("token successfully refreshed.");
 			response.setAccessToken("Bearer " + jwtToken);
-			response.setUserId(user.getId());
 			return new ResponseEntity<>(response, HttpStatus.OK);
 		} else {
 			response.setMessage("refresh token is not valid.");

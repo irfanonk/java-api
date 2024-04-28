@@ -31,18 +31,26 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		try {
 			String jwtToken = extractJwtFromRequest(request);
 			if (StringUtils.hasText(jwtToken) && jwtTokenProvider.validateToken(jwtToken)) {
-				Long id = jwtTokenProvider.getUserIdFromJwt(jwtToken);
-				UserDetails user = userDetailsService.loadUserById(id);
-				if (user != null) {
-					UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(user, null,
-							user.getAuthorities());
-					auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-					SecurityContextHolder.getContext().setAuthentication(auth);
+				Long userId = jwtTokenProvider.getUserIdFromJwt(jwtToken);
+				UserDetails userDetails = userDetailsService.loadUserById(userId);
+				if (userDetails != null) {
+					UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+							userDetails, null, userDetails.getAuthorities());
+					authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+					SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+
+					// Inject the user ID into the request
+					CustomHttpServletRequestWrapper requestWrapper = new CustomHttpServletRequestWrapper(request,
+							userId);
+					filterChain.doFilter(requestWrapper, response);
+					return;
 				}
 			}
 		} catch (Exception e) {
+			// Handle exceptions
 			return;
 		}
+		// Continue with the filter chain if authentication fails
 		filterChain.doFilter(request, response);
 	}
 
