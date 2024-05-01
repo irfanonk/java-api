@@ -61,11 +61,22 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
+
         config.addAllowedOrigin("*");
         config.addAllowedHeader("*");
-        config.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+
+        config.setAllowedOrigins(Arrays.asList(
+                "http://localhost:3000",
+                "http://localhost:3001",
+                "http://localhost:3002",
+                "http://localhost:3003",
+                "http://localhost:3004",
+                "http://localhost:3030",
+                "https://e-commerce-platform-nu.vercel.app",
+                "https://e-commerce-platform-dusky.vercel.app"));
         config.setAllowedMethods(Arrays.asList("OPTIONS", "HEAD", "GET", "PUT",
                 "POST", "DELETE", "PATCH"));
+
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
     }
