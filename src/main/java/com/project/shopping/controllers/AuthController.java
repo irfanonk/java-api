@@ -55,7 +55,6 @@ public class AuthController {
 		this.refreshTokenService = refreshTokenService;
 	}
 
-	@CrossOrigin
 	@PostMapping("/login")
 	public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest loginRequest) {
 		AuthResponse authResponse = new AuthResponse();
@@ -79,7 +78,6 @@ public class AuthController {
 		return new ResponseEntity<>(authResponse, HttpStatus.OK);
 	}
 
-	@CrossOrigin
 	@PostMapping("/register")
 	public ResponseEntity<AuthResponse> register(@RequestBody AuthRequest registerRequest) {
 		AuthResponse authResponse = new AuthResponse();
@@ -114,7 +112,6 @@ public class AuthController {
 		return new ResponseEntity<>(authResponse, HttpStatus.CREATED);
 	}
 
-	@CrossOrigin
 	@PostMapping("/refresh")
 	public ResponseEntity<AuthResponse> refresh(@RequestBody RefreshRequest refreshRequest) {
 		AuthResponse response = new AuthResponse();
