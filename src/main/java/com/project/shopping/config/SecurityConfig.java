@@ -56,20 +56,19 @@ public class SecurityConfig {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
-    // @Bean
-    // public CorsFilter corsFilter() {
-    // UrlBasedCorsConfigurationSource source = new
-    // UrlBasedCorsConfigurationSource();
-    // CorsConfiguration config = new CorsConfiguration();
-    // config.setAllowCredentials(true);
-    // config.addAllowedOrigin("*");
-    // config.addAllowedHeader("*");
-    // config.setAllowedOrigins(Arrays.asList("http://**", "https://**"));
-    // config.setAllowedMethods(Arrays.asList("OPTIONS", "HEAD", "GET", "PUT",
-    // "POST", "DELETE", "PATCH"));
-    // source.registerCorsConfiguration("/**", config);
-    // return new CorsFilter(source);
-    // }
+    @Bean
+    public CorsFilter corsFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true);
+        config.addAllowedOrigin("*");
+        config.addAllowedHeader("*");
+        config.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+        config.setAllowedMethods(Arrays.asList("OPTIONS", "HEAD", "GET", "PUT",
+                "POST", "DELETE", "PATCH"));
+        source.registerCorsConfiguration("/**", config);
+        return new CorsFilter(source);
+    }
 
     // @Bean
     // public CorsFilter corsFilter() {
