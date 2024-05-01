@@ -71,17 +71,18 @@ public class SecurityConfig {
     // return new CorsFilter(source);
     // }
 
-    @Bean
-    public CorsFilter corsFilter() {
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(true);
-        config.addAllowedOrigin("*"); // Allow requests from any origin
-        config.addAllowedHeader("*"); // Allow all headers
-        config.addAllowedMethod("*"); // Allow all HTTP methods
-        source.registerCorsConfiguration("/**", config);
-        return new CorsFilter(source);
-    }
+    // @Bean
+    // public CorsFilter corsFilter() {
+    // UrlBasedCorsConfigurationSource source = new
+    // UrlBasedCorsConfigurationSource();
+    // CorsConfiguration config = new CorsConfiguration();
+    // config.setAllowCredentials(true);
+    // config.addAllowedOrigin("*"); // Allow requests from any origin
+    // config.addAllowedHeader("*"); // Allow all headers
+    // config.addAllowedMethod("*"); // Allow all HTTP methods
+    // source.registerCorsConfiguration("/**", config);
+    // return new CorsFilter(source);
+    // }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
