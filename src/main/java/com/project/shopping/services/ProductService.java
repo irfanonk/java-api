@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,7 +23,6 @@ import com.project.shopping.entities.Product;
 import com.project.shopping.repos.ProductRepository;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class ProductService {
@@ -101,16 +101,23 @@ public class ProductService {
         ObjectMapper objectMapper = new ObjectMapper();
 
         try {
+
             // Read JSON file and map/convert to List of Product
             List<Product> products = objectMapper.readValue(new File("data/products.json"),
                     new TypeReference<List<Product>>() {
                     });
 
+            // Convert List<Product> to List<Product> with tags as comma-separated string
+            List<Product> updatedProducts = products.stream().map(product -> {
+                return product;
+            }).collect(Collectors.toList());
+
             // Save all products to the database
-            productRepository.saveAll(products);
+            productRepository.saveAll(updatedProducts);
 
         } catch (IOException e) {
             e.printStackTrace();
+
         }
     }
 

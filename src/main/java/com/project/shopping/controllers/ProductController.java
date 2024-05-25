@@ -30,16 +30,16 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-    // @GetMapping("/import-data")
-    // public ResponseEntity<String> importProductsFromExternalURL(@RequestParam
-    // String externalURL) {
-    // productService.importProductsFromExternalURL(externalURL);
-    // return ResponseEntity.status(HttpStatus.OK).body("Products imported
-    // successfully from external URL.");
-    // }
     @Operation(hidden = true)
-    @GetMapping("/import-data")
-    public ResponseEntity<String> importProductsFromExternalURL() {
+    @GetMapping("/import-data-externalurl")
+    public ResponseEntity<String> importProductsFromExternalURL(@RequestParam String externalURL) {
+        productService.importProductsFromExternalURL(externalURL);
+        return ResponseEntity.status(HttpStatus.OK).body("Products imported successfully from external URL.");
+    }
+
+    @Operation(hidden = true)
+    @GetMapping("/import-data-json")
+    public ResponseEntity<String> importProductsFromJson() {
         productService.importProductsFromJson();
         return ResponseEntity.status(HttpStatus.OK).body("Products imported successfully from json.");
     }

@@ -24,6 +24,7 @@ import com.project.shopping.repos.RoleRepository;
 import com.project.shopping.requests.RefreshRequest;
 import com.project.shopping.requests.AuthRequest;
 import com.project.shopping.responses.AuthResponse;
+import com.project.shopping.responses.ErrorResponse;
 import com.project.shopping.security.JwtTokenProvider;
 import com.project.shopping.services.RefreshTokenService;
 import com.project.shopping.services.UserService;
@@ -56,18 +57,26 @@ public class AuthController {
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest loginRequest) {
+	public ResponseEntity<?> login(@RequestBody AuthRequest loginRequest) {
 		AuthResponse authResponse = new AuthResponse();
+
 		if (!loginRequest.isValid()) {
-			authResponse.setMessage("Please provide email and password!");
-			return new ResponseEntity<>(authResponse, HttpStatus.BAD_REQUEST);
+			ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "invalid credentials",
+					"Please provide email and password!");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
 		}
+		User oneUser = userService.getOneUserByUserName(loginRequest.getUserName());
+		System.out.println("oneUser : " + oneUser);
+
 		if (userService.getOneUserByUserName(loginRequest.getUserName()) == null) {
-			authResponse.setMessage("Email or password wrong!");
-			return new ResponseEntity<>(authResponse, HttpStatus.BAD_REQUEST);
+
+			ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "invalid credentials",
+					"Email or password wrong!");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
 		}
 		UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
 				loginRequest.getUserName(), loginRequest.getPassword());
+
 		Authentication auth = authenticationManager.authenticate(authToken);
 		SecurityContextHolder.getContext().setAuthentication(auth);
 		String jwtToken = jwtTokenProvider.generateJwtToken(auth);
@@ -75,19 +84,25 @@ public class AuthController {
 
 		authResponse.setAccessToken("Bearer " + jwtToken);
 		authResponse.setRefreshToken(refreshTokenService.createRefreshToken(user));
+		authResponse.setMessage("Successful");
 		return new ResponseEntity<>(authResponse, HttpStatus.OK);
 	}
 
 	@PostMapping("/register")
-	public ResponseEntity<AuthResponse> register(@RequestBody AuthRequest registerRequest) {
+	public ResponseEntity<?> register(@RequestBody AuthRequest registerRequest) {
+
 		AuthResponse authResponse = new AuthResponse();
+
 		if (!registerRequest.isValid()) {
-			authResponse.setMessage("Please provide email and password!");
-			return new ResponseEntity<>(authResponse, HttpStatus.BAD_REQUEST);
+			ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "invalid credentials",
+					"Please provide email and password!");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
 		}
 		if (userService.getOneUserByUserName(registerRequest.getUserName()) != null) {
-			authResponse.setMessage("Email already in use.");
-			return new ResponseEntity<>(authResponse, HttpStatus.BAD_REQUEST);
+
+			ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "invalid credentials",
+					"Email already in use.");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
 		}
 
 		User user = new User();
