@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import com.project.shopping.dto.UpdateUserDto;
 import com.project.shopping.entities.User;
 import com.project.shopping.repos.CommentRepository;
 import com.project.shopping.repos.PostRepository;
@@ -44,7 +46,18 @@ public class UserService {
 		return userRepository.findUserByUserIdWithFields(userId, fields);
 	}
 
-	public User updateOneUser(Long userId, User newUser) {
+	public User updateOneUser(Long userId, UpdateUserDto newUser) {
+		Optional<User> user = userRepository.findById(userId);
+		if (user.isPresent()) {
+			User foundUser = user.get();
+			BeanUtils.copyProperties(newUser, foundUser); // excluding non-updatable fields
+			userRepository.save(foundUser);
+			return foundUser;
+		} else
+			return null;
+	}
+
+	public User updateOneUserAsAdmin(Long userId, User newUser) {
 		Optional<User> user = userRepository.findById(userId);
 		if (user.isPresent()) {
 			User foundUser = user.get();

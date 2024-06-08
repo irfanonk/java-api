@@ -1,5 +1,6 @@
 package com.project.shopping.requests;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
@@ -11,6 +12,7 @@ public class AuthRequest {
 	String firstName;
 	String lastName;
 	String status;
+	@Schema(hidden = true)
 	boolean valid;
 
 	public AuthRequest(String email, String password, String firstName,
@@ -25,11 +27,7 @@ public class AuthRequest {
 	}
 
 	private boolean isValid(String email, String password) {
-		if (email == null || password == null)
-			return false;
-		if (email.trim().isEmpty() || password.trim().isEmpty())
-			return false;
-		return true;
+		return email != null && !email.trim().isEmpty() && password != null && !password.trim().isEmpty();
 	}
 
 }

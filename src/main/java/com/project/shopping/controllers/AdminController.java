@@ -57,7 +57,7 @@ public class AdminController {
 
 	@PutMapping("/users/{userId}")
 	public ResponseEntity<Void> updateOneUser(@PathVariable Long userId, @RequestBody User newUser) {
-		User user = userService.updateOneUser(userId, newUser);
+		User user = userService.updateOneUserAsAdmin(userId, newUser);
 		if (user != null)
 			return new ResponseEntity<>(HttpStatus.OK);
 		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

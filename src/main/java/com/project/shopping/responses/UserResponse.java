@@ -21,6 +21,7 @@ public class UserResponse {
 	private String phone;
 	private String status;
 	private String profession;
+	private String profileUrl;
 	private List<Role> roles;
 
 	public UserResponse(User entity) {
@@ -36,5 +37,6 @@ public class UserResponse {
 		this.status = entity.getStatus();
 		this.profession = entity.getProfession();
 		this.roles = entity.getRoles();
+		this.profileUrl = entity.getProfileUrl();
 	}
 }
